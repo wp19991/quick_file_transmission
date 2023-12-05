@@ -1,6 +1,6 @@
 import asyncio
 import base64
-import os.path
+import os
 
 import aiohttp
 
