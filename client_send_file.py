@@ -23,3 +23,5 @@ async def send_file_via_websocket():
 
 asyncio.run(send_file_via_websocket())
 # "C:\Users\wp\Desktop\fei\屏幕截图1.png"
+# "C:\Users\wp\Desktop\esp\mqtt.txt"
+# "C:\Users\wp\Desktop\esp\micropython固件.pptx"

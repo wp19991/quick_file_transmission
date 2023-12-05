@@ -19,6 +19,8 @@ async def send_file_via_websocket():
                 if '文件名' in data:
                     print(f'开始准备接收文件{data}')
                     received_data = await ws.receive_str()
+                    if '文件名' in received_data:
+                        received_data = await ws.receive_str()
                     save_path = os.path.join(need_tongbu_file_path, data.split('件名:')[-1])
                     with open(save_path, 'wb') as f:
                         f.write(base64.b64decode(received_data.encode("utf-8")))
