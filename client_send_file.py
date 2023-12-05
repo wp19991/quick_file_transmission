@@ -22,4 +22,4 @@ async def send_file_via_websocket():
 
 
 asyncio.run(send_file_via_websocket())
-# "C:\Users\wp\Desktop\电视台.m3u"
+# "C:\Users\wp\Desktop\fei\屏幕截图1.png"

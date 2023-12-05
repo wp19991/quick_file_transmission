@@ -4,7 +4,7 @@ import os
 
 import aiohttp
 
-need_tongbu_file_path = r'./同步文件夹'
+need_tongbu_file_path = r'./同步文件夹1'
 
 if not os.path.exists(need_tongbu_file_path):
     os.mkdir(need_tongbu_file_path)
