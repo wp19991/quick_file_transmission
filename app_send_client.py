@@ -46,7 +46,7 @@ async def app_send_client():
             while True:
                 cmd_file_path = input('请输入文件路径，或者字符串，进行传输：')
                 try:
-                    await ws.send_str(task.login(username=username, password=password))
+                    await ws.send_str(task.ping())
                     msg = await ws.receive_str()  # 接收服务器的确认消息
                     task_info = task.get_task_info(msg)
                     print(f"[task_name:{task_info['task']}],[status: {task_info['status']}]")

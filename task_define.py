@@ -4,7 +4,6 @@ import os
 from typing import Union
 
 
-
 class websocket_task:
     """
     json任务定义
