@@ -9,7 +9,7 @@ from task_define import websocket_task
 need_tongbu_file_path = r'./app_get_client_1_同步文件夹'
 username = "xiaomin"
 password = "xiaomin"
-ws_url = "http://127.0.0.1:8081/ws_bytes"
+ws_url = "http://123.60.39.103:1234/ws_bytes"
 task = websocket_task()
 
 if not os.path.exists(need_tongbu_file_path):
