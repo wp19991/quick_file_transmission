@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import os
 
 import aiohttp
@@ -52,10 +53,10 @@ async def app_get_client():
                     file_bytes = task.base64str_to_bytes(task_info['data']['file_base64_data'])
                     with open(os.path.join(need_tongbu_file_path, file_name), 'wb') as f:
                         f.write(file_bytes)
-                    print(f"同步文件成功:{file_name}")
+                    print(f"{datetime.datetime.now()}同步文件成功:{file_name}")
                 elif task_info['task'] == 'transmission_word':
                     word = task_info['data']
-                    print(f"同步消息:{word}")
+                    print(f"{datetime.datetime.now()}同步消息:{word}")
 
 
 asyncio.run(app_get_client())

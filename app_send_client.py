@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import os
 
 import aiohttp
@@ -53,6 +54,7 @@ async def app_send_client():
                     ws = await session.ws_connect(ws_url, max_msg_size=56577720)
                     authentication = await user_login(ws)
                     print("重连成功")
+                print(f"{datetime.datetime.now()}开始同步:[data:{cmd_file_path}]")
                 if os.path.exists(cmd_file_path):
                     send_str = task.transmission_file(authentication=authentication, file_path=cmd_file_path)
                     await ws.send_str(send_str)
