@@ -4,24 +4,6 @@ import os
 from typing import Union
 
 
-class task_run:
-    @staticmethod
-    def transmission_file(task_info,save_path,connected_clients,websocket):
-        task = websocket_task()
-        file_name = task_info['data']['file_name']
-        file_base64_data = task_info['data']['file_base64_data']
-        file_bytes = task.base64str_to_bytes(file_base64_data)
-        with open(os.path.join(save_path, file_name), 'rb') as f:
-            f.write(file_bytes)
-        # 将这个文件转发到其他连接的客户端
-        transmission_data = task.return_task_status(task_name='transmission_file', status="ok", data={
-            "file_name": file_name,
-            "file_base64_data": file_base64_data
-        })
-        for client in connected_clients:
-            if client != websocket:
-                await client.send_text(transmission_data)
-
 
 class websocket_task:
     """
@@ -41,13 +23,22 @@ class websocket_task:
         return json.loads(data)
 
     @staticmethod
-    def return_task_status(task_name: str, status: str, data: Union[str, dict]):
+    def return_task_status(task_name: str, status: str, data: Union[str, dict] = ""):
         t_data = {
             "task": task_name,
             "status": status,
             "data": data
         }
         return json.dumps(t_data, ensure_ascii=False)
+
+    @staticmethod
+    def ping():
+        data = {
+            "task": "ping",
+            "authentication": "",
+            "data": ""
+        }
+        return json.dumps(data, ensure_ascii=False)
 
     @staticmethod
     def login(username: str, password: str):

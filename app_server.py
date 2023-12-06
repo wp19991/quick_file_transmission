@@ -50,7 +50,6 @@ def root():
 @app.websocket("/ws_bytes")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()  # 建立连接
-    connected_clients.append(websocket)  # 连接建立时，将WebSocket对象添加到列表中
     try:
         while True:
             # 接收从客户端发送的消息
@@ -59,6 +58,7 @@ async def websocket_endpoint(websocket: WebSocket):
             res_data = ""
             if task_info['task'] == 'login':
                 # 登录的操作
+                print("开始登录", task_info)
                 t_authentication = get_authentication(task_info['data']['username'], task_info['data']['password'])
                 if t_authentication == "":
                     res_data = task.return_task_status(task_name='login', status='no', data="")
@@ -67,17 +67,19 @@ async def websocket_endpoint(websocket: WebSocket):
                         "username": task_info['data']['username'],
                         "authentication": t_authentication
                     })
+                    connected_clients.append(websocket)  # 登录成功，将WebSocket对象添加到列表中
             elif task_info['task'] == 'transmission_file':
                 # 传递文件
+                print("传递文件", task_info['data']['file_name'])
                 if not is_authentication(task_info['authentication']):
                     # 没有验证成功
-                    res_data = task.return_task_status(task_name='transmission_file', status='no', data="")
+                    res_data = task.return_task_status(task_name='transmission_file', status='no')
                 else:
                     # 开始任务
                     file_name = task_info['data']['file_name']
                     file_base64_data = task_info['data']['file_base64_data']
                     file_bytes = task.base64str_to_bytes(file_base64_data)
-                    with open(os.path.join(save_path, file_name), 'rb') as f:
+                    with open(os.path.join(save_path, file_name), 'wb') as f:
                         f.write(file_bytes)
                     # 将这个文件转发到其他连接的客户端
                     transmission_data = task.return_task_status(task_name='transmission_file', status="ok", data={
@@ -88,12 +90,13 @@ async def websocket_endpoint(websocket: WebSocket):
                         if client != websocket:
                             await client.send_text(transmission_data)
                     # 发送成功信息
-                    res_data = task.return_task_status(task_name='transmission_file', status="ok", data="")
+                    res_data = task.return_task_status(task_name='transmission_file', status="ok")
             elif task_info['task'] == 'transmission_word':
                 # 传递字符串
+                print("传递字符串", task_info)
                 if not is_authentication(task_info['authentication']):
                     # 没有验证成功
-                    res_data = task.return_task_status(task_name='transmission_word', status='no', data="")
+                    res_data = task.return_task_status(task_name='transmission_word', status='no')
                 else:
                     # 开始任务
                     word = task_info['data']
@@ -105,25 +108,30 @@ async def websocket_endpoint(websocket: WebSocket):
                         if client != websocket:
                             await client.send_text(transmission_data)
                     # 发送成功信息
-                    res_data = task.return_task_status(task_name='transmission_word', status="ok", data=word)
+                    res_data = task.return_task_status(task_name='transmission_word', status="ok")
             elif task_info['task'] == 'upload_file':
-                # 传递文件
+                # 上传文件
+                print("上传文件", task_info['data']['file_name'])
                 if not is_authentication(task_info['authentication']):
                     # 没有验证成功
-                    res_data = task.return_task_status(task_name='upload_file', status='no', data="")
+                    res_data = task.return_task_status(task_name='upload_file', status='no')
                 else:
                     # 开始任务
                     file_name = task_info['data']['file_name']
                     file_base64_data = task_info['data']['file_base64_data']
                     file_bytes = task.base64str_to_bytes(file_base64_data)
-                    with open(os.path.join(save_path, file_name), 'rb') as f:
+                    with open(os.path.join(save_path, file_name), 'wb') as f:
                         f.write(file_bytes)
                     # 发送成功信息
-                    res_data = task.return_task_status(task_name='upload_file', status="ok", data="")
+                    res_data = task.return_task_status(task_name='upload_file', status="ok")
             elif task_info['task'] == 'download_file':
                 pass
+            elif task_info['task'] == 'ping':
+                # 保持连接，不返回消息
+                continue
             else:
-                pass
+                print("非法任务，执行失败")
+                res_data = task.return_task_status(task_name='fail_login', status="no")
             # 发送任务结束状态信息
             await websocket.send_text(res_data)
     except Exception as e:
