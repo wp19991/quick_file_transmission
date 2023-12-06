@@ -5,7 +5,6 @@ import datetime
 import os
 from typing import List
 
-import uvicorn
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
@@ -50,7 +49,6 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         # 连接关闭时，从列表中移除WebSocket对象
         connected_clients.remove(websocket)
-
 
 # if __name__ == "__main__":
 #     uvicorn.run(app, host="0.0.0.0", port=8081)
